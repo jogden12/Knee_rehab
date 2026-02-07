@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Knee Rehab">
+<meta name="theme-color" content="#0c1a2e">
+<title>Knee Rehab Coach</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦵</text></svg>">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiS25lZSBSZWhhYiBDb2FjaCIsInNob3J0X25hbWUiOiJLbmVlIFJlaGFiIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBjMWEyZSIsInRoZW1lX2NvbG9yIjoiIzBjMWEyZSJ9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c1a2e;
+  --bg2: #122240;
+  --bg3: #1a2d52;
+  --card: #152744;
+  --card-border: rgba(100,160,255,0.08);
+  --text: #e8edf5;
+  --text2: #8b9ec2;
+  --text3: #556a8e;
+  --accent: #4ea8ff;
+  --accent2: #2dd4a8;
+  --accent3: #f59e42;
+  --danger: #f45b69;
+  --success: #2dd4a8;
+  --warning: #f59e42;
+  --font: 'DM Sans', -apple-system, sans-serif;
+  --mono: 'Space Mono', monospace;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { height:100%; overflow:hidden; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+/* Scrollable content */
+.screen { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
+.screen-pad { padding: 16px 16px 100px; }
+
+/* --- HEADER --- */
+.header {
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg);
+  border-bottom: 1px solid var(--card-border);
+  position: relative; z-index: 10;
+}
+.header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.header-sub { font-size: 11px; color: var(--text3); font-family: var(--mono); letter-spacing: 0.5px; text-transform: uppercase; }
+.header-btn {
+  width: 40px; height: 40px; border: none; background: var(--bg2);
+  border-radius: 12px; color: var(--text2); display: flex; align-items: center;
+  justify-content: center; cursor: pointer; transition: all 0.2s;
+}
+.header-btn:active { transform: scale(0.92); background: var(--bg3); }
+.header-btn svg { width: 20px; height: 20px; }
+
+/* --- BOTTOM NAV --- */
+.bottom-nav {
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 8px 0 calc(8px + var(--safe-bottom));
+  background: var(--bg); border-top: 1px solid var(--card-border);
+  position: relative; z-index: 10;
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 16px; border: none; background: none; color: var(--text3);
+  font-family: var(--font); font-size: 10px; font-weight: 500; cursor: pointer;
+  transition: color 0.2s; letter-spacing: 0.3px;
+}
+.nav-item.active { color: var(--accent); }
+.nav-item svg { width: 22px; height: 22px; }
+
+/* --- CARDS --- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+.card-sm { padding: 14px; }
+
+/* --- MEDICAL DISCLAIMER --- */
+.disclaimer {
+  background: rgba(244,91,105,0.08);
+  border: 1px solid rgba(244,91,105,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.disclaimer svg { width: 16px; height: 16px; color: var(--danger); flex-shrink: 0; margin-top: 1px; }
+.disclaimer p { font-size: 12px; color: rgba(244,91,105,0.8); line-height: 1.5; }
+.disclaimer strong { color: var(--danger); }
+
+/* --- PHASE BADGE --- */
+.phase-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; font-family: var(--mono);
+  letter-spacing: 0.8px; text-transform: uppercase;
+}
+.phase-badge.p1 { background: rgba(78,168,255,0.12); color: var(--accent); }
+.phase-badge.p2 { background: rgba(45,212,168,0.12); color: var(--accent2); }
+.phase-badge.p3 { background: rgba(245,158,66,0.12); color: var(--accent3); }
+.phase-badge.p4 { background: rgba(244,91,105,0.12); color: var(--danger); }
+
+/* --- STATS ROW --- */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 16px 0; }
+.stat-box {
+  background: var(--bg2); border-radius: var(--radius-sm);
+  padding: 14px 10px; text-align: center;
+}
+.stat-val { font-size: 26px; font-weight: 700; font-family: var(--mono); }
+.stat-val.blue { color: var(--accent); }
+.stat-val.green { color: var(--accent2); }
+.stat-val.orange { color: var(--accent3); }
+.stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+/* --- WEEK HEATMAP --- */
+.week-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; margin: 12px 0 8px; }
+.week-day { text-align: center; }
+.week-day-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; font-family: var(--mono); }
+.week-day-box {
+  aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center;
+  justify-content: center; font-size: 14px; font-weight: 700; font-family: var(--mono);
+}
+.wdb-0 { background: var(--bg2); color: var(--text3); }
+.wdb-1 { background: rgba(245,158,66,0.2); color: var(--accent3); }
+.wdb-2 { background: rgba(78,168,255,0.25); color: var(--accent); }
+.wdb-3 { background: rgba(45,212,168,0.3); color: var(--accent2); }
+
+/* --- EXERCISE LIST --- */
+.exercise-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px; border-radius: var(--radius-sm);
+  background: var(--bg2); margin-bottom: 8px;
+  cursor: pointer; transition: all 0.15s; border: 1px solid transparent;
+}
+.exercise-item:active { transform: scale(0.985); border-color: var(--card-border); }
+.exercise-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; background: var(--bg3); flex-shrink: 0;
+}
+.exercise-info { flex: 1; min-width: 0; }
+.exercise-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.exercise-cat { font-size: 11px; color: var(--text3); }
+.exercise-chevron { color: var(--text3); flex-shrink: 0; }
+.exercise-chevron svg { width: 16px; height: 16px; }
+
+/* --- BIG BUTTON --- */
+.big-btn {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  width: 100%; padding: 18px; border: none; border-radius: var(--radius);
+  font-family: var(--font); font-size: 17px; font-weight: 700; cursor: pointer;
+  transition: all 0.15s; letter-spacing: -0.2px;
+}
+.big-btn:active { transform: scale(0.97); }
+.big-btn.primary { background: var(--accent); color: #fff; }
+.big-btn.success { background: var(--success); color: #0a2218; }
+.big-btn.ghost { background: var(--bg2); color: var(--text2); border: 1px solid var(--card-border); }
+.big-btn svg { width: 22px; height: 22px; }
+.big-btn:disabled { opacity: 0.4; pointer-events: none; }
+
+/* --- SESSION SCREEN --- */
+.progress-bar-wrap { height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+.progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
+.progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 16px; }
+
+.exercise-hero { text-align: center; margin-bottom: 24px; }
+.exercise-hero-icon { font-size: 56px; margin-bottom: 12px; }
+.exercise-hero-name { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.exercise-hero-cat {
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  background: rgba(78,168,255,0.1); color: var(--accent);
+  font-size: 11px; font-weight: 600; font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.instruction-box {
+  background: rgba(78,168,255,0.06); border: 1px solid rgba(78,168,255,0.12);
+  border-radius: var(--radius-sm); padding: 16px; margin-bottom: 16px;
+}
+.instruction-box h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent); margin-bottom: 8px; font-family: var(--mono); }
+.instruction-box p { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.detail-box { border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.detail-box.reps { background: rgba(45,212,168,0.06); border: 1px solid rgba(45,212,168,0.12); }
+.detail-box.sets { background: rgba(245,158,66,0.06); border: 1px solid rgba(245,158,66,0.12); }
+.detail-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; font-family: var(--mono); margin-bottom: 4px; }
+.detail-box.reps .detail-label { color: var(--accent2); }
+.detail-box.sets .detail-label { color: var(--accent3); }
+.detail-value { font-size: 18px; font-weight: 700; }
+.detail-box.reps .detail-value { color: var(--accent2); }
+.detail-box.sets .detail-value { color: var(--accent3); }
+
+.timer-box {
+  background: rgba(245,158,66,0.06); border: 1px solid rgba(245,158,66,0.15);
+  border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 16px;
+}
+.timer-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent3); font-family: var(--mono); margin-bottom: 8px; }
+.timer-display { font-size: 42px; font-weight: 700; font-family: var(--mono); color: var(--text); margin-bottom: 12px; }
+.timer-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px; border: none; border-radius: 12px;
+  font-family: var(--font); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.timer-btn.start { background: var(--accent3); color: #1a0f00; }
+.timer-btn.running { background: var(--bg3); color: var(--text3); cursor: default; }
+.timer-btn.done { background: var(--success); color: #0a2218; }
+.timer-btn:active { transform: scale(0.95); }
+.timer-btn svg { width: 16px; height: 16px; }
+
+.note-box {
+  background: var(--bg2); border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px;
+}
+.note-box label { display: block; font-size: 11px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.note-box textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--card-border);
+  border-radius: 8px; padding: 10px; color: var(--text); font-family: var(--font);
+  font-size: 14px; resize: none; outline: none; line-height: 1.5;
+}
+.note-box textarea::placeholder { color: var(--text3); }
+.note-box textarea:focus { border-color: rgba(78,168,255,0.3); }
+
+.up-next {
+  display: flex; align-items: center; gap: 12px; padding: 14px;
+  background: var(--bg2); border-radius: var(--radius-sm); margin-top: 12px;
+}
+.up-next-label { font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px; }
+.up-next-name { font-size: 14px; font-weight: 600; }
+.up-next-icon { font-size: 28px; flex-shrink: 0; }
+
+/* --- MODAL / OVERLAY --- */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(8,14,26,0.85);
+  z-index: 100; display: flex; align-items: flex-end; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.modal {
+  background: var(--card); border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
+  padding: 24px 20px calc(24px + var(--safe-bottom));
+  animation: slideUp 0.3s ease;
+}
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+
+.modal-handle { width: 36px; height: 4px; background: var(--text3); border-radius: 2px; margin: 0 auto 20px; }
+.modal h2 { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+
+/* --- PAIN SCALE --- */
+.pain-scale { display: flex; gap: 4px; margin: 8px 0 16px; }
+.pain-btn {
+  flex: 1; padding: 10px 0; border: 1px solid var(--card-border);
+  border-radius: 8px; background: var(--bg2); color: var(--text3);
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s; text-align: center;
+}
+.pain-btn.selected { border-color: var(--accent); background: rgba(78,168,255,0.15); color: var(--accent); }
+.pain-btn:active { transform: scale(0.92); }
+
+.swell-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 20px; }
+.swell-btn {
+  padding: 14px; border: 1px solid var(--card-border); border-radius: 12px;
+  background: var(--bg2); color: var(--text2); font-family: var(--font);
+  font-size: 14px; font-weight: 600; cursor: pointer; text-align: center;
+  transition: all 0.15s;
+}
+.swell-btn.selected-no { border-color: var(--success); background: rgba(45,212,168,0.1); color: var(--success); }
+.swell-btn.selected-yes { border-color: var(--warning); background: rgba(245,158,66,0.1); color: var(--warning); }
+.swell-btn:active { transform: scale(0.95); }
+
+/* --- PHASE SELECTOR --- */
+.phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.phase-card {
+  padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--card-border);
+  background: var(--bg2); cursor: pointer; transition: all 0.15s;
+}
+.phase-card.active { border-color: var(--accent); background: rgba(78,168,255,0.06); }
+.phase-card:active { transform: scale(0.97); }
+.phase-card-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.phase-card-sub { font-size: 11px; color: var(--text3); }
+
+/* --- ADVANCE BANNER --- */
+.advance-banner {
+  background: linear-gradient(135deg, rgba(45,212,168,0.12), rgba(78,168,255,0.12));
+  border: 1px solid rgba(45,212,168,0.2); border-radius: var(--radius);
+  padding: 18px; margin-bottom: 12px;
+}
+.advance-banner h3 { color: var(--success); font-size: 16px; margin-bottom: 6px; }
+.advance-banner p { color: var(--text2); font-size: 13px; margin-bottom: 12px; }
+.advance-btn {
+  display: inline-flex; padding: 8px 18px; border: none; border-radius: 10px;
+  background: var(--success); color: #0a2218; font-family: var(--font);
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s;
+}
+.advance-btn:active { transform: scale(0.95); }
+
+/* --- GOALS --- */
+.goals-list { margin: 12px 0; }
+.goal-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; color: var(--text2); }
+.goal-item svg { width: 16px; height: 16px; color: var(--success); flex-shrink: 0; }
+
+/* --- SETTINGS --- */
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0; border-bottom: 1px solid var(--card-border);
+}
+.setting-row:last-child { border: none; }
+.setting-info { flex: 1; }
+.setting-title { font-size: 14px; font-weight: 600; }
+.setting-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.toggle {
+  width: 48px; height: 28px; border-radius: 14px; border: none;
+  background: var(--bg3); cursor: pointer; position: relative;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 22px; height: 22px; border-radius: 11px;
+  background: white; transition: transform 0.2s;
+}
+.toggle.on::after { transform: translateX(20px); }
+
+.reminder-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px; background: var(--bg2); border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+.reminder-row input[type="time"] {
+  background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px;
+  padding: 6px 10px; color: var(--text); font-family: var(--mono); font-size: 14px;
+  outline: none; width: 100px;
+}
+.reminder-row input[type="text"] {
+  flex: 1; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px;
+  padding: 6px 10px; color: var(--text); font-family: var(--font); font-size: 13px;
+  outline: none; min-width: 0;
+}
+.reminder-toggle {
+  width: 24px; height: 24px; border-radius: 12px; border: 2px solid var(--text3);
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; transition: all 0.15s;
+}
+.reminder-toggle.on { border-color: var(--accent); background: var(--accent); }
+.reminder-toggle svg { width: 14px; height: 14px; color: white; display: none; }
+.reminder-toggle.on svg { display: block; }
+.reminder-del {
+  width: 28px; height: 28px; border: none; background: none;
+  color: var(--danger); cursor: pointer; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; opacity: 0.6;
+}
+.reminder-del:active { opacity: 1; }
+.reminder-del svg { width: 16px; height: 16px; }
+
+.add-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border: 1px dashed var(--card-border); border-radius: 10px;
+  background: none; color: var(--text3); font-family: var(--font); font-size: 12px;
+  cursor: pointer; transition: all 0.15s;
+}
+.add-btn:active { background: var(--bg2); }
+.add-btn svg { width: 14px; height: 14px; }
+
+.action-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px; border-radius: 12px; font-family: var(--font);
+  font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px;
+  transition: all 0.15s; border: none;
+}
+.action-btn:active { transform: scale(0.97); }
+.action-btn.export { background: rgba(78,168,255,0.1); color: var(--accent); }
+.action-btn.reset { background: rgba(244,91,105,0.08); color: var(--danger); }
+.action-btn svg { width: 18px; height: 18px; }
+
+.info-box {
+  background: var(--bg2); border-radius: var(--radius-sm);
+  padding: 14px; font-size: 12px; color: var(--text3); line-height: 1.6;
+}
+.info-box strong { color: var(--text2); }
+.daily-rec {
+  background: rgba(78,168,255,0.06); border: 1px solid rgba(78,168,255,0.1);
+  border-radius: var(--radius-sm); padding: 14px; margin-top: 12px;
+}
+.daily-rec h4 { font-size: 11px; color: var(--accent); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.daily-rec p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* section labels */
+.section-label {
+  font-size: 10px; font-family: var(--mono); text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--text3); margin-bottom: 10px;
+  padding-left: 2px;
+}
+
+/* hidden */
+.hidden { display: none !important; }
+
+/* completion celebration */
+.celebrate { text-align: center; margin-bottom: 24px; }
+.celebrate-icon { font-size: 64px; margin-bottom: 12px; animation: bounce 0.6s ease; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.celebrate h2 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.celebrate p { color: var(--text2); font-size: 14px; }
+
+/* Smooth transitions */
+.screen { opacity: 1; transition: opacity 0.15s; }
+
+.goal-text { font-size: 11px; color: var(--text3); text-align: center; margin-top: 6px; font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ============================================================
+// DATA: Exercise database from rehabilitation protocols
+// ============================================================
+const PHASES = {
+  phase1: {
+    key: 'phase1',
+    name: 'Phase I',
+    subtitle: 'Immediate Post-Op (Days 0–7)',
+    color: 'p1',
+    sessionsPerDay: '3–6',
+    goals: ['Reduce swelling, minimize pain', 'Restore knee range of motion (ROM)', 'Re-establish quadriceps activation'],
+    dailyRec: 'Complete 3–6 exercise sessions throughout the day. Keep knee straight and elevated when resting. Ice 15–30 min after each session. Weight bearing as tolerated with crutches.',
+    exercises: [
+      { id:'ankle-pumps', name:'Ankle Pumps', cat:'Swelling Management', icon:'🦶', reps:'20–30', sets:'3–6× per day', hold:null, inst:'Point toes up and down repeatedly. Helps reduce swelling and improve circulation post-surgery.' },
+      { id:'quad-sets', name:'Quad Sets', cat:'Strengthening', icon:'🦵', reps:'10', sets:'3–6 sessions/day', hold:10, inst:'Push knee down into surface and try to raise heel off the floor. Tighten muscles on top of thigh. Hold 10 seconds. This re-activates your quadriceps.' },
+      { id:'patella-mob', name:'Kneecap Mobilization', cat:'Range of Motion', icon:'🔘', reps:'10', sets:'3–6 sessions/day', hold:10, inst:'With thumbs on border of kneecap, gently push kneecap toward foot (inferior glide), then pull upward toward hip (superior glide). Also glide medially and laterally.' },
+      { id:'heel-slides', name:'Heel Slides', cat:'Range of Motion', icon:'🔄', reps:'10', sets:'3–6 sessions/day', hold:10, inst:'Bend knee as far as possible, then use other leg to gently push until stretch is felt. Hold, then relax. You can also do this sitting or on a wall.' },
+      { id:'prone-hang', name:'Prone Hang (Extension)', cat:'Range of Motion', icon:'⬇️', reps:'3', sets:'3 sessions/day', hold:180, inst:'Lie face down with lower legs off end of bed. Place 5 lb weight on ankle. Relax and let gravity straighten your knee. Hold 3–5 minutes.' },
+      { id:'heel-prop', name:'Heel Prop (Extension)', cat:'Range of Motion', icon:'📏', reps:'3', sets:'3 sessions/day', hold:180, inst:'Place rolled towel under ankle so heel is propped up, knee unsupported. Place 5 lb weight across knee. Let gravity push knee into extension. Hold 3–5 min.' },
+      { id:'slr', name:'Straight Leg Raise', cat:'Strengthening', icon:'⬆️', reps:'up to 30', sets:'Multiple sessions/day', hold:null, inst:'Tighten thigh muscles, then lift leg 12 inches from surface keeping knee locked. Lower with control. Do as many reps as possible to fatigue (up to 30).' },
+      { id:'hip-abd', name:'Hip Abduction (Side-Lying)', cat:'Strengthening', icon:'↗️', reps:'up to 30', sets:'Multiple sessions/day', hold:3, inst:'Lying on side, tighten thigh and lift top leg keeping knee straight. Keep pelvis rolled forward slightly. Hold 3 seconds. Do up to 30 reps.' },
+      { id:'clamshell', name:'Sidelying Clamshell', cat:'Strengthening', icon:'🐚', reps:'up to 30', sets:'Multiple sessions/day', hold:3, inst:'Lie on side with knees bent. Keep feet together and open top knee like a clamshell. Hold 3 sec. Do up to 30 reps to fatigue.' },
+      { id:'calf-raises', name:'Calf Raises', cat:'Strengthening', icon:'🧍', reps:'As tolerated', sets:'Daily', hold:null, inst:'Rise up on toes, lower with control. Hold onto support for balance. Progress to single leg when able.' },
+    ]
+  },
+  phase2: {
+    key: 'phase2',
+    name: 'Phase II',
+    subtitle: 'Intermediate Post-Op (Days 8–14)',
+    color: 'p2',
+    sessionsPerDay: '2–3',
+    goals: ['Achieve full pain-free ROM', 'Restore muscular strength & endurance', 'Normal gait without assistive device', 'Improve balance & proprioception'],
+    dailyRec: 'Continue multiple daily sessions. Goal: discharge crutches. Work toward full ROM. Monitor for swelling after activity. Walk with normal gait pattern.',
+    exercises: [
+      { id:'prone-quad-str', name:'Quad Stretch (Prone)', cat:'Stretching', icon:'🔙', reps:'10', sets:'3–6 sessions/day', hold:3, inst:'Lie on side with knees bent. Move top leg back and actively pull heel toward buttocks until stretch felt in front of thigh. Hold 3 sec.' },
+      { id:'ham-stretch', name:'Hamstring Stretch (Supine)', cat:'Stretching', icon:'🦵', reps:'10', sets:'3–6 sessions/day', hold:3, inst:'Lie on back with rope/belt around foot. Straighten knee actively, then gently pull with rope until stretch felt in back of thigh. Hold 3 sec.' },
+      { id:'hip-flexor-str', name:'Hip Flexor Stretch', cat:'Stretching', icon:'🧎', reps:'10', sets:'3–6 sessions/day', hold:3, inst:'Standing, step non-surgical leg forward into a lunge position. Keep torso upright and gently shift weight forward until stretch felt in front of hip. Hold 3 sec.' },
+      { id:'wall-slides', name:'Wall Slides / Mini Squats', cat:'Strengthening', icon:'🧱', reps:'30 total', sets:'Daily', hold:3, inst:'Lean against wall. Slowly lower buttocks to comfortable range (0–60°). Keep knees over heels and pointing forward. Hold 3 sec, then return.' },
+      { id:'step-ups', name:'Step Ups', cat:'Strengthening', icon:'🪜', reps:'20–30', sets:'Daily', hold:null, inst:'Step up onto 4–6 inch step leading with surgical leg. Step down with control. Add a march (knee lift) at the top to progress.' },
+      { id:'ham-curls', name:'Standing Hamstring Curls', cat:'Strengthening', icon:'🔄', reps:'up to 30', sets:'Daily', hold:null, inst:'Standing, bend knee bringing heel toward buttocks. Lower with control. Do to fatigue, up to 30 total reps.' },
+      { id:'single-leg-bal', name:'Single Leg Balance', cat:'Balance', icon:'⚖️', reps:'3–5 times', sets:'Daily', hold:10, inst:'Stand on surgical leg with knee slightly bent. Keep foot flat, pelvis level, back straight. Hold at least 10 sec. Progress to unstable surface.' },
+      { id:'hip-hike', name:'Hip Hike', cat:'Strengthening', icon:'📐', reps:'10', sets:'Multiple×/day', hold:3, inst:'Stand on surgical leg on step edge. Hike up unsupported hip, keeping stance knee unlocked and facing forward. Hold 3 sec.' },
+      { id:'bridges', name:'Glute Bridge', cat:'Strengthening', icon:'🌉', reps:'15–20', sets:'2–3 sets', hold:3, inst:'Lie on back, knees bent. Squeeze glutes and lift hips off floor. Hold 3 sec at top. Progress to single leg bridge.' },
+    ]
+  },
+  phase3: {
+    key: 'phase3',
+    name: 'Phase III',
+    subtitle: 'Late Post-Op (Weeks 2–8)',
+    color: 'p3',
+    sessionsPerDay: '1–2',
+    goals: ['Maintain full pain-free ROM', 'Enhance strength & endurance', 'Avoid post-exercise pain/swelling', 'Promote proper movement patterns'],
+    dailyRec: '1–2 focused sessions per day. Begin cardio (bike, elliptical, pool). Progress strength training with gym equipment. Full weight bearing.',
+    exercises: [
+      { id:'bike', name:'Stationary Bike', cat:'Cardio', icon:'🚴', reps:null, sets:'20–30 min', hold:null, inst:'Cycle at moderate pace. Start with low resistance. Gradually increase as tolerated. Maintain comfortable cadence.' },
+      { id:'elliptical', name:'Elliptical / Stair Climber', cat:'Cardio', icon:'🏃', reps:null, sets:'15–20 min', hold:null, inst:'Low resistance, moderate pace. Available starting around 4–6 weeks post-op as tolerated.' },
+      { id:'leg-press', name:'Leg Press Machine', cat:'Strengthening', icon:'💪', reps:'10–15', sets:'2–3 sets', hold:null, inst:'Press through full range with controlled movement. Don\'t lock knees at top. Progress weight gradually.' },
+      { id:'lat-lunges', name:'Lateral Lunges', cat:'Strengthening', icon:'↔️', reps:'10–12 each', sets:'2–3 sets', hold:null, inst:'Step sideways, bend knee keeping it over ankle. Push back to center with control. Focus on proper alignment.' },
+      { id:'rdl', name:'Romanian Deadlift', cat:'Strengthening', icon:'🏋️', reps:'10–12', sets:'2–3 sets', hold:null, inst:'Hinge at hips keeping back straight. Lower weight along shins. Engage glutes to return to standing.' },
+      { id:'sl-deadlift', name:'Single Leg Deadlift', cat:'Strength & Balance', icon:'🤸', reps:'8–10 each', sets:'2–3 sets', hold:null, inst:'Balance on one leg, hinge forward keeping back straight. Focus on control and stability. Use light weight.' },
+      { id:'step-downs', name:'Step Downs', cat:'Strengthening', icon:'📉', reps:'10–15', sets:'2–3 sets', hold:null, inst:'Stand on step. Slowly lower opposite leg to floor with control. Keep stance knee aligned over ankle. Return up.' },
+      { id:'y-balance', name:'Y-Balance Reaches', cat:'Balance', icon:'🌟', reps:'5 each dir', sets:'2–3 sets', hold:null, inst:'Stand on one leg. Reach with opposite leg in anterior, posteromedial, and posterolateral directions. Maintain balance.' },
+      { id:'split-squats', name:'Split Squats', cat:'Strengthening', icon:'🦿', reps:'10–12 each', sets:'2–3 sets', hold:null, inst:'Staggered stance with surgical leg forward. Lower rear knee toward ground. Keep front knee over ankle. Return with control.' },
+    ]
+  },
+  phase4: {
+    key: 'phase4',
+    name: 'Phase IV',
+    subtitle: 'Return to Sport (Weeks 9–12)',
+    color: 'p4',
+    sessionsPerDay: '1',
+    goals: ['Maintain full ROM', 'Progress to sport-specific movements', 'Return to all activities', 'Quad index >95%, Hop test ≥95%'],
+    dailyRec: 'Daily training with sport-specific drills. Focus on power, agility, and return-to-play. Include cognitive dual-task activities. Monitor for pain/swelling.',
+    exercises: [
+      { id:'intervals', name:'Interval Running', cat:'Cardio', icon:'🏃', reps:null, sets:'20–30 min', hold:null, inst:'Alternate jogging and walking intervals. Progress duration and intensity gradually. Stop if pain or swelling.' },
+      { id:'box-jumps', name:'Box Jumps', cat:'Plyometrics', icon:'📦', reps:'8–10', sets:'2–3 sets', hold:null, inst:'Jump onto box with both feet. Land softly with knees bent. Step down with control. Focus on landing mechanics.' },
+      { id:'lat-bounds', name:'Lateral Bounds', cat:'Plyometrics', icon:'↔️', reps:'10–12', sets:'2–3 sets', hold:null, inst:'Jump laterally from one leg to the other. Focus on controlled landing with good knee alignment. Stick each landing.' },
+      { id:'agility', name:'Agility Ladder Drills', cat:'Agility', icon:'🪜', reps:'5–8 patterns', sets:'2–3 sets', hold:null, inst:'Perform various footwork patterns through ladder. Progress speed as control improves.' },
+      { id:'cutting', name:'Cutting & Pivoting', cat:'Sport-Specific', icon:'⚡', reps:'10–15 cuts', sets:'2–3 sets', hold:null, inst:'Practice direction changes at increasing speeds. Focus on proper knee alignment and deceleration control.' },
+      { id:'dual-task', name:'Dual-Task Drills', cat:'Sport-Specific', icon:'🧠', reps:'5–10 min', sets:'1–2 sets', hold:null, inst:'Perform agility or plyometric drills while also performing a cognitive task (counting, catching, reacting to cues).' },
+    ]
+  }
+};
+
+const PHASE_ORDER = ['phase1','phase2','phase3','phase4'];
+
+// ============================================================
+// STORAGE HELPERS
+// ============================================================
+const STORE = {
+  get(k, def) { try { const v = localStorage.getItem('kr_'+k); return v !== null ? JSON.parse(v) : def; } catch(e){ return def; } },
+  set(k, v) { try { localStorage.setItem('kr_'+k, JSON.stringify(v)); } catch(e){} },
+  del(k) { try { localStorage.removeItem('kr_'+k); } catch(e){} }
+};
+
+// ============================================================
+// APP STATE
+// ============================================================
+let state = {
+  tab: 'home', // home, session, settings
+  phase: STORE.get('phase', 'phase1'),
+  sessions: STORE.get('sessions', []),
+  reminders: STORE.get('reminders', [
+    { id:1, time:'09:00', label:'Morning Session', on:true },
+    { id:2, time:'14:00', label:'Afternoon Session', on:true },
+    { id:3, time:'19:00', label:'Evening Session', on:true },
+  ]),
+  notifOn: STORE.get('notifOn', false),
+  notes: STORE.get('notes', {}),
+  // session state
+  inSession: false,
+  sessionPhase: null,
+  exIdx: 0,
+  sessionStart: null,
+  currentNote: '',
+  // completion modal
+  showComplete: false,
+  painLevel: null,
+  swelling: null,
+  // timer
+  timerTarget: 0,
+  timerRemaining: 0,
+  timerRunning: false,
+  timerInterval: null,
+  // ui
+  showPhaseInfo: true,
+  showSettingsModal: false,
+};
+
+function save() {
+  STORE.set('phase', state.phase);
+  STORE.set('sessions', state.sessions);
+  STORE.set('reminders', state.reminders);
+  STORE.set('notifOn', state.notifOn);
+  STORE.set('notes', state.notes);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function todaySessions() {
+  const t = new Date().toDateString();
+  return state.sessions.filter(s => new Date(s.date).toDateString() === t).length;
+}
+
+function daysInPhase() {
+  const first = state.sessions.find(s => s.phase === state.phase);
+  if (!first) return 0;
+  return Math.floor((Date.now() - new Date(first.date).getTime()) / 86400000);
+}
+
+function shouldAdvance() {
+  const d = daysInPhase();
+  const first = state.sessions.find(s => s.phase === state.phase);
+  if (!first) return null;
+  if (state.phase === 'phase1' && d >= 7) return 'Phase II — Intermediate Post-Op';
+  if (state.phase === 'phase2' && d >= 7) return 'Phase III — Late Post-Op';
+  if (state.phase === 'phase3' && d >= 42) return 'Phase IV — Return to Sport';
+  return null;
+}
+
+function weekActivity() {
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6-i));
+    const ds = d.toDateString();
+    const c = state.sessions.filter(s => new Date(s.date).toDateString() === ds).length;
+    return { date:d, count:c };
+  });
+}
+
+function formatTimer(s) {
+  const m = Math.floor(s/60), sec = s%60;
+  return m > 0 ? `${m}:${String(sec).padStart(2,'0')}` : `${sec}s`;
+}
+
+function vibrate(pattern) {
+  if (navigator.vibrate) navigator.vibrate(pattern);
+}
+
+// ============================================================
+// SVG ICONS (inline)
+// ============================================================
+const IC = {
+  home: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  play: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>`,
+  settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+  checkSm: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  chevR: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+  chevD: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+  chevU: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`,
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  alert: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  trophy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  download: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+  trash: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>`,
+  plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  x: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  bell: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  arrowL: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+  star: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
+};
+
+// ============================================================
+// RENDER ENGINE
+// ============================================================
+const app = document.getElementById('app');
+
+function render() {
+  if (state.inSession) {
+    renderSession();
+  } else if (state.showSettingsModal) {
+    renderSettings();
+  } else {
+    renderHome();
+  }
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function renderHome() {
+  const ph = PHASES[state.phase];
+  const ts = todaySessions();
+  const dip = daysInPhase();
+  const adv = shouldAdvance();
+  const wa = weekActivity();
+
+  let html = `
+    <div class="header">
+      <div>
+        <h1>Knee Rehab Coach</h1>
+        <div class="header-sub">Post-Meniscectomy Recovery</div>
+      </div>
+      <button class="header-btn" onclick="openSettings()">${IC.settings}</button>
+    </div>
+    <div class="screen">
+      <div class="screen-pad">
+        <div class="disclaimer">
+          ${IC.alert}
+          <p><strong>Medical Disclaimer:</strong> This is a guide tool, not medical advice. Always follow your surgeon's specific instructions.</p>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-val blue">${ts}</div><div class="stat-label">Today</div></div>
+          <div class="stat-box"><div class="stat-val green">${state.sessions.length}</div><div class="stat-label">Total</div></div>
+          <div class="stat-box"><div class="stat-val orange">${dip}</div><div class="stat-label">Days</div></div>
+        </div>
+
+        <!-- WEEK HEATMAP -->
+        <div class="card card-sm">
+          <div class="section-label">${IC.calendar} Weekly Activity</div>
+          <div class="week-grid">
+            ${wa.map(d => `
+              <div class="week-day">
+                <div class="week-day-label">${d.date.toLocaleDateString('en-US',{weekday:'narrow'})}</div>
+                <div class="week-day-box wdb-${Math.min(d.count,3)}">${d.count}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="goal-text">🎯 Goal: ${ph.sessionsPerDay} sessions/day</div>
+        </div>
+
+        <!-- ADVANCE BANNER -->
+        ${adv ? `
+        <div class="advance-banner">
+          <h3>🏆 Great Progress!</h3>
+          <p>Ready for ${adv}</p>
+          <button class="advance-btn" onclick="advancePhase()">Advance →</button>
+        </div>` : ''}
+
+        <!-- PHASE INFO -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="togglePhaseInfo()">
+            <div>
+              <span class="phase-badge ${ph.color}">${ph.name}</span>
+              <div style="font-size:13px;color:var(--text2);margin-top:6px">${ph.subtitle}</div>
+            </div>
+            <span style="color:var(--text3)">${state.showPhaseInfo ? IC.chevU : IC.chevD}</span>
+          </div>
+          ${state.showPhaseInfo ? `
+            <div class="goals-list">
+              ${ph.goals.map(g => `<div class="goal-item">${IC.check}<span>${g}</span></div>`).join('')}
+            </div>
+            <div class="daily-rec">
+              <h4>Daily Recommendation</h4>
+              <p>${ph.dailyRec}</p>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- START SESSION -->
+        <button class="big-btn primary" onclick="startSession()" style="margin-bottom:16px">
+          ${IC.play}
+          <div><div>Start Session</div><div style="font-size:12px;opacity:0.7;font-weight:400">${ph.exercises.length} exercises</div></div>
+        </button>
+
+        <!-- EXERCISE LIST -->
+        <div class="section-label">Exercises</div>
+        ${ph.exercises.map((ex,i) => {
+          const noteKey = state.phase + '-' + ex.id;
+          const hasNote = state.notes[noteKey];
+          return `
+          <div class="exercise-item" onclick="startSessionAt(${i})">
+            <div class="exercise-icon">${ex.icon}</div>
+            <div class="exercise-info">
+              <div class="exercise-name">${ex.name}${hasNote ? ' <span style="color:var(--accent3);font-size:12px">★</span>' : ''}</div>
+              <div class="exercise-cat">${ex.cat}${ex.hold ? ' · Hold '+ex.hold+'s' : ''}${ex.reps ? ' · '+ex.reps+' reps' : ''}</div>
+            </div>
+            <div class="exercise-chevron">${IC.chevR}</div>
+          </div>`;
+        }).join('')}
+
+        <!-- PHASE SELECTOR -->
+        <div style="margin-top:20px">
+          <div class="section-label">Phase Selection</div>
+          <div class="phase-grid">
+            ${PHASE_ORDER.map(pk => {
+              const p = PHASES[pk];
+              return `<div class="phase-card ${state.phase===pk?'active':''}" onclick="selectPhase('${pk}')">
+                <div class="phase-card-title">${p.name}</div>
+                <div class="phase-card-sub">${p.subtitle}</div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item active" onclick="goTab('home')">${IC.home}<span>Home</span></button>
+      <button class="nav-item" onclick="startSession()">${IC.play}<span>Session</span></button>
+      <button class="nav-item" onclick="openSettings()">${IC.settings}<span>Settings</span></button>
+    </div>
+  `;
+  app.innerHTML = html;
+}
+
+// ============================================================
+// SESSION SCREEN
+// ============================================================
+function renderSession() {
+  const ph = PHASES[state.sessionPhase];
+  const ex = ph.exercises[state.exIdx];
+  const total = ph.exercises.length;
+  const pct = ((state.exIdx + 1) / total * 100).toFixed(0);
+  const noteKey = state.sessionPhase + '-' + ex.id;
+  const savedNote = state.notes[noteKey] || '';
+  const displayNote = state.currentNote || savedNote;
+
+  let timerHtml = '';
+  if (ex.hold) {
+    const display = state.timerRunning ? formatTimer(state.timerRemaining) : (state.timerRemaining > 0 && state.timerRemaining < ex.hold ? formatTimer(state.timerRemaining) : formatTimer(ex.hold));
+    const btnClass = state.timerRunning ? 'running' : (state.timerRemaining === 0 && state.timerTarget > 0 ? 'done' : 'start');
+    const btnText = state.timerRunning ? 'Running...' : (state.timerRemaining === 0 && state.timerTarget > 0 ? '✓ Done' : 'Start Timer');
+    timerHtml = `
+      <div class="timer-box">
+        <div class="timer-label">Hold Duration</div>
+        <div class="timer-display">${display}</div>
+        <button class="timer-btn ${btnClass}" onclick="startTimer(${ex.hold})" ${state.timerRunning ? 'disabled' : ''}>
+          ${IC.clock} ${btnText}
+        </button>
+      </div>`;
+  }
+
+  let detailHtml = '';
+  if (ex.reps || ex.sets) {
+    detailHtml = '<div class="detail-grid">';
+    if (ex.reps) detailHtml += `<div class="detail-box reps"><div class="detail-label">Reps</div><div class="detail-value">${ex.reps}</div></div>`;
+    if (ex.sets) detailHtml += `<div class="detail-box sets"><div class="detail-label">Sets/Freq</div><div class="detail-value">${ex.sets}</div></div>`;
+    detailHtml += '</div>';
+  }
+
+  let upNextHtml = '';
+  if (state.exIdx < total - 1) {
+    const next = ph.exercises[state.exIdx + 1];
+    upNextHtml = `
+      <div class="up-next">
+        <div class="up-next-icon">${next.icon}</div>
+        <div><div class="up-next-label">Up Next</div><div class="up-next-name">${next.name}</div></div>
+      </div>`;
+  }
+
+  let html = `
+    ${state.showComplete ? renderCompleteModal() : ''}
+    <div class="header">
+      <button class="header-btn" onclick="exitSession()">${IC.arrowL}</button>
+      <div style="text-align:center">
+        <div style="font-size:13px;font-weight:600">${ph.name}</div>
+        <div class="header-sub">Session</div>
+      </div>
+      <div style="width:40px"></div>
+    </div>
+    <div class="screen">
+      <div class="screen-pad">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+        <div class="progress-label"><span>Exercise ${state.exIdx+1} of ${total}</span><span>${pct}%</span></div>
+
+        <div class="card">
+          <div class="exercise-hero">
+            <div class="exercise-hero-icon">${ex.icon}</div>
+            <div class="exercise-hero-name">${ex.name}</div>
+            <div class="exercise-hero-cat">${ex.cat}</div>
+          </div>
+
+          <div class="instruction-box">
+            <h4>Instructions</h4>
+            <p>${ex.inst}</p>
+          </div>
+
+          ${detailHtml}
+          ${timerHtml}
+
+          <div class="note-box">
+            <label>Notes — how did this feel?</label>
+            <textarea rows="2" placeholder="e.g., 'Felt tight', 'Easy today'..." oninput="state.currentNote=this.value">${displayNote}</textarea>
+            ${savedNote && !state.currentNote ? '<div style="font-size:11px;color:var(--text3);margin-top:4px">💡 Previous note. Edit to update.</div>' : ''}
+          </div>
+        </div>
+
+        <button class="big-btn success" onclick="completeExercise()">
+          ${IC.check}
+          ${state.exIdx < total - 1 ? 'Complete & Next' : 'Finish Session'}
+        </button>
+        <button class="big-btn ghost" onclick="exitSession()" style="margin-top:8px">Exit Session</button>
+
+        ${upNextHtml}
+      </div>
+    </div>
+  `;
+  app.innerHTML = html;
+}
+
+function renderCompleteModal() {
+  const dur = state.sessionStart ? Math.floor((Date.now() - state.sessionStart) / 60000) : 0;
+  return `
+    <div class="modal-overlay" onclick="event.target===this && null">
+      <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="celebrate">
+          <div class="celebrate-icon">🎉</div>
+          <h2>Session Complete!</h2>
+          <p>${dur} minutes · ${PHASES[state.sessionPhase].exercises.length} exercises</p>
+        </div>
+
+        <div class="section-label">Pain Level (0–10)</div>
+        <div class="pain-scale">
+          ${Array.from({length:11},(_,i)=> `<button class="pain-btn ${state.painLevel===i?'selected':''}" onclick="setPain(${i})">${i}</button>`).join('')}
+        </div>
+
+        <div class="section-label">Swelling?</div>
+        <div class="swell-btns">
+          <button class="swell-btn ${state.swelling===false?'selected-no':''}" onclick="setSwell(false)">No ✓</button>
+          <button class="swell-btn ${state.swelling===true?'selected-yes':''}" onclick="setSwell(true)">Some</button>
+        </div>
+
+        <button class="big-btn success" onclick="finishSession()" ${state.painLevel===null||state.swelling===null?'disabled':''}>Save & Complete</button>
+        <button class="big-btn ghost" onclick="skipAndFinish()" style="margin-top:8px">Skip Tracking</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// SETTINGS SCREEN
+// ============================================================
+function renderSettings() {
+  let html = `
+    <div class="header">
+      <button class="header-btn" onclick="closeSettings()">${IC.arrowL}</button>
+      <div style="text-align:center"><h1 style="font-size:18px">Settings</h1></div>
+      <div style="width:40px"></div>
+    </div>
+    <div class="screen">
+      <div class="screen-pad">
+        <div class="card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-title">${IC.bell} Reminders</div>
+              <div class="setting-sub">Browser notification reminders</div>
+            </div>
+            <button class="toggle ${state.notifOn?'on':''}" onclick="toggleNotif()"></button>
+          </div>
+        </div>
+
+        <div class="section-label">Reminder Schedule</div>
+        ${state.reminders.map((r,i) => `
+          <div class="reminder-row">
+            <button class="reminder-toggle ${r.on?'on':''}" onclick="toggleReminder(${i})">${IC.checkSm}</button>
+            <input type="time" value="${r.time}" onchange="updateReminder(${i},'time',this.value)">
+            <input type="text" value="${r.label}" onchange="updateReminder(${i},'label',this.value)">
+            ${state.reminders.length > 1 ? `<button class="reminder-del" onclick="deleteReminder(${i})">${IC.x}</button>` : ''}
+          </div>
+        `).join('')}
+        <button class="add-btn" onclick="addReminder()" style="margin-top:8px">${IC.plus} Add Reminder</button>
+
+        <div style="margin-top:24px">
+          <button class="action-btn export" onclick="exportReport()">${IC.download} Export Progress Report</button>
+          <button class="action-btn reset" onclick="resetAll()">${IC.trash} Reset All Data</button>
+        </div>
+
+        <div class="info-box" style="margin-top:16px">
+          <strong>📱 Add to Home Screen</strong><br><br>
+          For the best experience on iPhone:<br>
+          1. Tap the Share button (⬆️) in Safari<br>
+          2. Tap "Add to Home Screen"<br>
+          3. Name it "Knee Rehab" and tap "Add"<br><br>
+          <em>Opens full-screen like a native app!</em>
+        </div>
+
+        <div class="info-box" style="margin-top:10px">
+          <strong>💡 Tips</strong><br><br>
+          • Phase I: 3–6 short sessions spread throughout the day<br>
+          • Ice & elevate 15–30 min after each session<br>
+          • Track pain & swelling to share with your PT<br>
+          • Increased swelling/pain = too much activity<br>
+          • Always follow your surgeon's specific guidance
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="closeSettings()">${IC.home}<span>Home</span></button>
+      <button class="nav-item" onclick="closeSettings();startSession()">${IC.play}<span>Session</span></button>
+      <button class="nav-item active">${IC.settings}<span>Settings</span></button>
+    </div>
+  `;
+  app.innerHTML = html;
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+function goTab(t) { state.tab = t; render(); }
+
+function openSettings() { state.showSettingsModal = true; render(); }
+function closeSettings() { state.showSettingsModal = false; render(); }
+
+function togglePhaseInfo() { state.showPhaseInfo = !state.showPhaseInfo; render(); }
+
+function selectPhase(p) { state.phase = p; save(); vibrate(30); render(); }
+
+function advancePhase() {
+  const idx = PHASE_ORDER.indexOf(state.phase);
+  if (idx < PHASE_ORDER.length - 1) {
+    state.phase = PHASE_ORDER[idx + 1];
+    save(); vibrate([100,50,100]); render();
+  }
+}
+
+function startSession() {
+  state.inSession = true;
+  state.sessionPhase = state.phase;
+  state.exIdx = 0;
+  state.sessionStart = Date.now();
+  state.currentNote = '';
+  state.showComplete = false;
+  state.painLevel = null;
+  state.swelling = null;
+  clearTimer();
+  render();
+  // scroll to top
+  const scr = document.querySelector('.screen');
+  if (scr) scr.scrollTop = 0;
+}
+
+function startSessionAt(idx) {
+  state.inSession = true;
+  state.sessionPhase = state.phase;
+  state.exIdx = idx;
+  state.sessionStart = Date.now();
+  state.currentNote = '';
+  state.showComplete = false;
+  state.painLevel = null;
+  state.swelling = null;
+  clearTimer();
+  render();
+}
+
+function exitSession() {
+  state.inSession = false;
+  clearTimer();
+  render();
+}
+
+function completeExercise() {
+  // save note
+  const ph = PHASES[state.sessionPhase];
+  const ex = ph.exercises[state.exIdx];
+  if (state.currentNote.trim()) {
+    state.notes[state.sessionPhase + '-' + ex.id] = state.currentNote.trim();
+    save();
+  }
+
+  if (state.exIdx < ph.exercises.length - 1) {
+    state.exIdx++;
+    state.currentNote = '';
+    clearTimer();
+    vibrate(50);
+    render();
+    const scr = document.querySelector('.screen');
+    if (scr) scr.scrollTop = 0;
+  } else {
+    // show completion
+    state.showComplete = true;
+    clearTimer();
+    vibrate([100,50,100,50,200]);
+    render();
+  }
+}
+
+function setPain(v) { state.painLevel = v; vibrate(30); render(); }
+function setSwell(v) { state.swelling = v; vibrate(30); render(); }
+
+function finishSession() {
+  const ph = PHASES[state.sessionPhase];
+  state.sessions.push({
+    date: new Date().toISOString(),
+    phase: state.sessionPhase,
+    duration: Math.floor((Date.now() - state.sessionStart) / 60000),
+    exercises: ph.exercises.length,
+    pain: state.painLevel,
+    swelling: state.swelling
+  });
+  state.inSession = false;
+  state.showComplete = false;
+  save();
+  vibrate([100,50,200]);
+  render();
+}
+
+function skipAndFinish() {
+  state.painLevel = 0;
+  state.swelling = false;
+  finishSession();
+}
+
+// Timer
+function startTimer(secs) {
+  if (state.timerRunning) return;
+  state.timerTarget = secs;
+  state.timerRemaining = secs;
+  state.timerRunning = true;
+  vibrate(50);
+  render();
+  state.timerInterval = setInterval(() => {
+    state.timerRemaining--;
+    if (state.timerRemaining <= 0) {
+      state.timerRemaining = 0;
+      state.timerRunning = false;
+      clearInterval(state.timerInterval);
+      state.timerInterval = null;
+      vibrate([100,50,100,50,100]);
+    }
+    // update timer display without full re-render
+    const disp = document.querySelector('.timer-display');
+    const btn = document.querySelector('.timer-btn');
+    if (disp) disp.textContent = formatTimer(state.timerRemaining);
+    if (btn && !state.timerRunning) {
+      btn.className = 'timer-btn done';
+      btn.innerHTML = IC.clock + ' ✓ Done';
+      btn.disabled = false;
+    }
+  }, 1000);
+}
+
+function clearTimer() {
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  state.timerInterval = null;
+  state.timerRunning = false;
+  state.timerRemaining = 0;
+  state.timerTarget = 0;
+}
+
+// Notifications
+async function toggleNotif() {
+  if (!state.notifOn) {
+    if (!('Notification' in window)) { alert('Notifications not supported'); return; }
+    if (Notification.permission === 'denied') { alert('Notifications blocked. Enable in browser settings.'); return; }
+    if (Notification.permission !== 'granted') {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') return;
+    }
+    state.notifOn = true;
+    new Notification('Reminders Enabled! 🎉', { body:'You\'ll receive exercise reminders', icon:'🦵' });
+  } else {
+    state.notifOn = false;
+  }
+  save(); vibrate(50); render();
+  scheduleNotifications();
+}
+
+let notifTimers = [];
+function scheduleNotifications() {
+  notifTimers.forEach(t => clearTimeout(t));
+  notifTimers = [];
+  if (!state.notifOn || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = Date.now();
+  state.reminders.filter(r => r.on).forEach(r => {
+    const [h,m] = r.time.split(':').map(Number);
+    const t = new Date(); t.setHours(h,m,0,0);
+    if (t.getTime() < now) t.setDate(t.getDate()+1);
+    notifTimers.push(setTimeout(() => {
+      new Notification(r.label + ' 🦵', { body:'Time for your ' + PHASES[state.phase].name + ' exercises' });
+    }, t.getTime() - now));
+  });
+}
+
+function toggleReminder(i) { state.reminders[i].on = !state.reminders[i].on; save(); scheduleNotifications(); render(); }
+function updateReminder(i, field, val) { state.reminders[i][field] = val; save(); scheduleNotifications(); }
+function deleteReminder(i) { state.reminders.splice(i,1); save(); scheduleNotifications(); render(); }
+function addReminder() { state.reminders.push({id:Date.now(), time:'12:00', label:'Session', on:true}); save(); render(); }
+
+// Export
+function exportReport() {
+  const report = {
+    exportDate: new Date().toISOString(),
+    currentPhase: state.phase,
+    totalSessions: state.sessions.length,
+    byPhase: state.sessions.reduce((a,s) => { a[s.phase]=(a[s.phase]||0)+1; return a; }, {}),
+    avgPain: state.sessions.filter(s=>s.pain!=null).length > 0
+      ? (state.sessions.filter(s=>s.pain!=null).reduce((a,s)=>a+s.pain,0) / state.sessions.filter(s=>s.pain!=null).length).toFixed(1) : 'N/A',
+    sessionsWithSwelling: state.sessions.filter(s=>s.swelling).length,
+    sessions: state.sessions,
+    notes: state.notes
+  };
+  const blob = new Blob([JSON.stringify(report,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `knee-rehab-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  vibrate([50,100,50]);
+}
+
+function resetAll() {
+  if (!confirm('⚠️ Clear all progress and settings? This cannot be undone.')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+render();
+scheduleNotifications();
+</script>
+</body>
+</html>
